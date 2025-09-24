@@ -1,0 +1,47 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsInt,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsNumber,
+} from 'class-validator';
+
+export class CreateAppointmentDto {
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  patientId: number;
+
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  doctorId: number;
+
+  @ApiProperty({ example: '2025-09-24T10:00:00Z' })
+  @IsDateString()
+  date: string;
+
+  @ApiProperty({ example: 'pending' })
+  @IsString()
+  status: string;
+
+  @ApiProperty({ example: 'Follow-up', required: false })
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @ApiProperty({ example: 100.0, required: false })
+  @IsOptional()
+  @IsNumber()
+  costs?: number;
+
+  @ApiProperty({ example: 'invoice.pdf', required: false })
+  @IsOptional()
+  @IsString()
+  invoice?: string;
+
+  @ApiProperty({ example: 'Checkup description', required: false })
+  @IsOptional()
+  @IsString()
+  description?: string;
+}
