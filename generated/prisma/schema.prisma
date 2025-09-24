@@ -13,3 +13,91 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// for User (Base)
+
+// Base User model
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String // "Patient", "Doctor", "Root"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient Patient?
+  doctor  Doctor?
+  root    Root?
+}
+
+model Patient {
+  id           Int           @id @default(autoincrement())
+  uid          Int           @unique // Reference to User.id
+  user         User          @relation(fields: [uid], references: [id])
+  ph           String
+  addr         String
+  appointments Appointment[] // all appointments; filter by status for history/upcoming
+  payment      String // encrypted payment info
+  storage      Storage?
+}
+
+model Doctor {
+  id           Int           @id @default(autoincrement())
+  uid          Int           @unique // Reference to User.id
+  user         User          @relation(fields: [uid], references: [id])
+  ph           String
+  license      String // file path or encrypted ref
+  type         String // "Generalist" | "Specialist"
+  schedule     Appointment[]
+  departmentId Int
+  department   Department    @relation(fields: [departmentId], references: [id])
+}
+
+model Root {
+  id   Int  @id @default(autoincrement())
+  uid  Int  @unique // Reference to User.id
+  user User @relation(fields: [uid], references: [id])
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  patientId   Int
+  doctorId    Int
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+  date        DateTime
+  status      String // "done" | "pending" | "cancelled"
+  notes       String?
+  invoice     String? // file path
+  costs       Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+}
+
+model Storage {
+  id        Int     @id @default(autoincrement())
+  patientId Int     @unique
+  patient   Patient @relation(fields: [patientId], references: [id])
+  files     File[]
+}
+
+model File {
+  id        Int       @id @default(autoincrement())
+  storageId Int
+  storage   Storage   @relation(fields: [storageId], references: [id])
+  filename  String
+  log       String?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+}
+
+model Department {
+  id          Int      @id @default(autoincrement())
+  name        String
+  remark      String?
+  description String?
+  doctors     Doctor[]
+}

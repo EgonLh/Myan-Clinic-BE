@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.8.2
- * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.8.2",
-  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -120,9 +120,99 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  username: 'username',
+  email: 'email',
+  password: 'password',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PatientScalarFieldEnum = {
+  id: 'id',
+  uid: 'uid',
+  ph: 'ph',
+  addr: 'addr',
+  payment: 'payment'
+};
+
+exports.Prisma.DoctorScalarFieldEnum = {
+  id: 'id',
+  uid: 'uid',
+  ph: 'ph',
+  license: 'license',
+  type: 'type',
+  departmentId: 'departmentId'
+};
+
+exports.Prisma.RootScalarFieldEnum = {
+  id: 'id',
+  uid: 'uid'
+};
+
+exports.Prisma.AppointmentScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId',
+  doctorId: 'doctorId',
+  date: 'date',
+  status: 'status',
+  notes: 'notes',
+  invoice: 'invoice',
+  costs: 'costs',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  description: 'description'
+};
+
+exports.Prisma.StorageScalarFieldEnum = {
+  id: 'id',
+  patientId: 'patientId'
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+  id: 'id',
+  storageId: 'storageId',
+  filename: 'filename',
+  log: 'log',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.DepartmentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  remark: 'remark',
+  description: 'description'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  User: 'User',
+  Patient: 'Patient',
+  Doctor: 'Doctor',
+  Root: 'Root',
+  Appointment: 'Appointment',
+  Storage: 'Storage',
+  File: 'File',
+  Department: 'Department'
 };
 
 /**
