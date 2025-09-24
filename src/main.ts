@@ -6,7 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // swagger configuration
-
+  app.enableCors({
+    origin: 'http://localhost:3001', // your frontend URL
+    credentials: true, // if you need cookies
+  });
   const config = new DocumentBuilder()
     .setTitle('My API')
     .setDescription('API documentation for Myan Clinic project')

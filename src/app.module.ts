@@ -10,9 +10,11 @@ import { StorageModule } from './storage/storage.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { DepartmentModule } from './department/department.module';
 import { RootModule } from './root/root.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     PrismaModule,
     PatientModule,
