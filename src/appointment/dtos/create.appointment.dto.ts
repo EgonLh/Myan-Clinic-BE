@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsInt,
-  IsDateString,
-  IsOptional,
-  IsString,
-  IsNumber,
-} from 'class-validator';
+import { IsInt, IsDateString, IsOptional, IsString, IsNumber, IsUrl } from 'class-validator';
 
 export class CreateAppointmentDto {
   @ApiProperty({ example: 1 })
@@ -44,4 +38,9 @@ export class CreateAppointmentDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({ example: 'https://meet.jit.si/abc123', required: false })
+  @IsOptional()
+  @IsUrl()
+  meetingLink?: string; // <-- optional meeting link
 }

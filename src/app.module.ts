@@ -11,6 +11,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { DepartmentModule } from './department/department.module';
 import { RootModule } from './root/root.module';
 import { AuthModule } from './auth/auth.module';
+import { AnalysisModule } from './analysis/analysis.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     AppointmentModule,
     DepartmentModule,
     RootModule,
+    AnalysisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -23,6 +23,8 @@ model User {
   email     String    @unique
   password  String
   role      String    // "Patient", "Doctor", "Root"
+  status       String        @default("inactive") // "active" | "inactive"
+  rating    Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -38,10 +40,9 @@ model Patient {
   ph           String
   addr         String
   appointments Appointment[] // all appointments; filter by status for history/upcoming
-  payment      String?        // encrypted payment info
+  payment      String?       // encrypted payment info
   storage      Storage?
 }
-
 model Doctor {
   id           Int           @id @default(autoincrement())
   uid          Int           @unique   // Reference to User.id
@@ -74,6 +75,7 @@ model Appointment {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   description String?
+  meetingLink String?
 }
 
 model Storage {

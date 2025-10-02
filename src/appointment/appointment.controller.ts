@@ -1,22 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  Param,
-  UseGuards,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Patch } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CreateAppointmentDto } from './dtos/create.appointment.dto';
 import { UpdateAppointmentDto } from './dtos/update.appointment.dto';
 
 @ApiTags('appointments')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('appointments')
 export class AppointmentController {
   constructor(private service: AppointmentService) {}
@@ -33,15 +22,21 @@ export class AppointmentController {
     return this.service.findAll();
   }
 
+  @ApiOperation({ summary: 'Get appointment by ID' })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(+id);
+  }
+
   @ApiOperation({ summary: 'Update appointment' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateAppointmentDto) {
     return this.service.update(+id, dto);
   }
 
-  @ApiOperation({ summary: 'Get appointment by ID' })
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(+id);
+  @ApiOperation({ summary: 'Get appointments by patient ID' })
+  @Get('patient/:patientId')
+  findByPatient(@Param('patientId') patientId: string) {
+    return this.service.findByPatient(+patientId);
   }
 }

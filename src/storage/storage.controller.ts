@@ -1,23 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  UseGuards,
-  Patch,
-  Param,
-} from '@nestjs/common';
-
+import { Controller, Post, Get, Body, Patch, Param } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CreateStorageDto } from './dtos/create.storage.dto';
-import { StorageService } from './storage.service';
 import { UpdateStorageDto } from './dtos/update.storage.dto';
+import { StorageService } from './storage.service';
 
 @ApiTags('storage')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('storage')
 export class StorageController {
   constructor(private service: StorageService) {}
@@ -38,5 +27,11 @@ export class StorageController {
   @Get()
   findAll() {
     return this.service.findAll();
+  }
+
+  @ApiOperation({ summary: 'Get storage records by patient ID' })
+  @Get('patient/:patientId')
+  findByPatient(@Param('patientId') patientId: string) {
+    return this.service.findByPatient(+patientId);
   }
 }
