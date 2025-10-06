@@ -57,10 +57,21 @@ export class AppointmentService {
     });
   }
 
-  // NEW: Find appointments by patientId
+  // ✅ Find appointments by patientId
   findByPatient(patientId: number) {
     return this.prisma.appointment.findMany({
       where: { patientId },
+      include: {
+        patient: { include: { user: true } },
+        doctor: { include: { user: true } },
+      },
+    });
+  }
+
+  // ✅ Find appointments by doctorId
+  findByDoctor(doctorId: number) {
+    return this.prisma.appointment.findMany({
+      where: { doctorId },
       include: {
         patient: { include: { user: true } },
         doctor: { include: { user: true } },

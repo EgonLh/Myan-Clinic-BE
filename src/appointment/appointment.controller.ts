@@ -39,4 +39,11 @@ export class AppointmentController {
   findByPatient(@Param('patientId') patientId: string) {
     return this.service.findByPatient(+patientId);
   }
+
+  // ✅ New: Get appointments by doctor ID
+  @ApiOperation({ summary: 'Get appointments by doctor ID' })
+  @Get('doctor/:doctorId')
+  findByDoctor(@Param('doctorId') doctorId: string) {
+    return this.service.findByDoctor(+doctorId);
+  }
 }

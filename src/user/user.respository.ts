@@ -8,7 +8,7 @@ import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   create(data: CreateUserDto) {
     return this.prisma.user.create({ data });
@@ -19,7 +19,13 @@ export class UserRepository {
   }
 
   findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        doctor: true,
+        patient: true,
+      },
+    });
   }
 
   update(id: number, data: UpdateUserDto) {
