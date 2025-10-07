@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsDateString, IsOptional, IsString, IsNumber, IsUrl } from 'class-validator';
+import {
+  IsInt,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsUrl,
+} from 'class-validator';
 
 export class CreateAppointmentDto {
   @ApiProperty({ example: 1 })
   @IsInt()
   patientId: number;
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 1, required: false })
+  @IsOptional()
   @IsInt()
-  doctorId: number;
+  doctorId?: number; // <-- made optional for auto-assignment
 
   @ApiProperty({ example: '2025-09-24T10:00:00Z' })
   @IsDateString()
@@ -18,6 +26,10 @@ export class CreateAppointmentDto {
   @ApiProperty({ example: 'pending' })
   @IsString()
   status: string;
+
+  @ApiProperty({ example: '1 hr' })
+  @IsInt()
+  duration: number;
 
   @ApiProperty({ example: 'Follow-up', required: false })
   @IsOptional()

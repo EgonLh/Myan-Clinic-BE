@@ -27,7 +27,7 @@ model User {
   rating    Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-
+  gender    String @default("M")
   patient   Patient?
   doctor    Doctor?
   root      Root?
@@ -39,9 +39,11 @@ model Patient {
   user         User          @relation(fields: [uid], references: [id])
   ph           String
   addr         String
+  age          Int    @default(0)
   appointments Appointment[] // all appointments; filter by status for history/upcoming
   payment      String?       // encrypted payment info
   storage      Storage?
+  condition    String   @default("-") //  "Good" | "Stable" | ""Critical" | ""Recovered"" | "Under Observation"| ""Needs Attention"
 }
 model Doctor {
   id           Int           @id @default(autoincrement())
@@ -53,6 +55,7 @@ model Doctor {
   schedule     Appointment[]
   departmentId Int
   department   Department    @relation(fields: [departmentId], references: [id])
+  isActive     Boolean       @default(true)
 }
 
 model Root {
@@ -68,6 +71,7 @@ model Appointment {
   patient     Patient  @relation(fields: [patientId], references: [id])
   doctor      Doctor   @relation(fields: [doctorId], references: [id])
   date        DateTime
+  duration    Int  @default(1)
   status      String   // "done" | "pending" | "cancelled"
   notes       String?
   invoice     String?  // file path

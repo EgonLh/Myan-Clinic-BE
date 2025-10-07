@@ -8,6 +8,9 @@ export class CreatePatientDto {
   @IsString()
   addr: string;
 
+  @IsString()
+  condition: string;
+
   @IsOptional()
   @IsString()
   payment?: string;

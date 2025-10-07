@@ -12,9 +12,52 @@ export class AppointmentService {
     return `https://meet.jit.si/${roomName}`;
   }
 
-  create(dto: CreateAppointmentDto) {
+  // ✅ Assign the least-busy generalist automatically
+  private async assignGeneralist(date: string) {
+    // 1. Get all active generalists
+    const generalists = await this.prisma.doctor.findMany({
+      where: { type: 'Generalist', isActive: true },
+      include: { schedule: true },
+    });
+
+    if (!generalists.length) throw new Error('No generalist doctor available');
+
+    // 2. Compute current load for the selected day
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
+
+    const generalistsWithLoad = await Promise.all(
+      generalists.map(async (doc) => {
+        const count = await this.prisma.appointment.count({
+          where: {
+            doctorId: doc.id,
+            date: { gte: startOfDay, lt: endOfDay },
+            status: 'pending',
+          },
+        });
+        return { ...doc, currentLoad: count };
+      }),
+    );
+
+    // 3. Pick the least-busy doctor (round-robin if tie)
+    generalistsWithLoad.sort((a, b) => a.currentLoad - b.currentLoad);
+    return generalistsWithLoad[0];
+  }
+
+  // ✅ Create appointment with automatic generalist assignment
+  async create(dto: CreateAppointmentDto) {
+    let doctorId = dto.doctorId;
+
+    // Auto-assign generalist if no doctor specified
+    if (!doctorId) {
+      const assignedDoctor = await this.assignGeneralist(dto.date);
+      doctorId = assignedDoctor.id;
+    }
+
     const dataWithLink = {
       ...dto,
+      doctorId,
       meetingLink: dto.meetingLink || this.generateJitsiLink(),
     };
 
@@ -57,7 +100,6 @@ export class AppointmentService {
     });
   }
 
-  // ✅ Find appointments by patientId
   findByPatient(patientId: number) {
     return this.prisma.appointment.findMany({
       where: { patientId },
@@ -68,7 +110,6 @@ export class AppointmentService {
     });
   }
 
-  // ✅ Find appointments by doctorId
   findByDoctor(doctorId: number) {
     return this.prisma.appointment.findMany({
       where: { doctorId },
