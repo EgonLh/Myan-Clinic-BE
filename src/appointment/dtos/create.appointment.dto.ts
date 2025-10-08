@@ -17,7 +17,7 @@ export class CreateAppointmentDto {
   @ApiProperty({ example: 1, required: false })
   @IsOptional()
   @IsInt()
-  doctorId?: number; // <-- made optional for auto-assignment
+  doctorId?: number;
 
   @ApiProperty({ example: '2025-09-24T10:00:00Z' })
   @IsDateString()
@@ -27,7 +27,7 @@ export class CreateAppointmentDto {
   @IsString()
   status: string;
 
-  @ApiProperty({ example: '1 hr' })
+  @ApiProperty({ example: 1 })
   @IsInt()
   duration: number;
 
@@ -54,5 +54,5 @@ export class CreateAppointmentDto {
   @ApiProperty({ example: 'https://meet.jit.si/abc123', required: false })
   @IsOptional()
   @IsUrl()
-  meetingLink?: string; // <-- optional meeting link
+  meetingLink?: string;
 }

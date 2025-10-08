@@ -12,9 +12,8 @@ export class AppointmentService {
     return `https://meet.jit.si/${roomName}`;
   }
 
-  // ✅ Assign the least-busy generalist automatically
+  // Auto-assign least-busy generalist
   private async assignGeneralist(date: string) {
-    // 1. Get all active generalists
     const generalists = await this.prisma.doctor.findMany({
       where: { type: 'Generalist', isActive: true },
       include: { schedule: true },
@@ -22,7 +21,6 @@ export class AppointmentService {
 
     if (!generalists.length) throw new Error('No generalist doctor available');
 
-    // 2. Compute current load for the selected day
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
@@ -40,16 +38,13 @@ export class AppointmentService {
       }),
     );
 
-    // 3. Pick the least-busy doctor (round-robin if tie)
     generalistsWithLoad.sort((a, b) => a.currentLoad - b.currentLoad);
     return generalistsWithLoad[0];
   }
 
-  // ✅ Create appointment with automatic generalist assignment
   async create(dto: CreateAppointmentDto) {
     let doctorId = dto.doctorId;
 
-    // Auto-assign generalist if no doctor specified
     if (!doctorId) {
       const assignedDoctor = await this.assignGeneralist(dto.date);
       doctorId = assignedDoctor.id;

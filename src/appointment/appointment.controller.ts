@@ -1,8 +1,18 @@
-import { Controller, Post, Get, Body, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Patch,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CreateAppointmentDto } from './dtos/create.appointment.dto';
 import { UpdateAppointmentDto } from './dtos/update.appointment.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('appointments')
 @ApiBearerAuth()
@@ -12,7 +22,12 @@ export class AppointmentController {
 
   @ApiOperation({ summary: 'Create an appointment' })
   @Post()
-  create(@Body() dto: CreateAppointmentDto) {
+  @UseInterceptors(FileInterceptor('invoice'))
+  create(
+    @Body() dto: CreateAppointmentDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) dto.invoice = file.filename; // store file path
     return this.service.create(dto);
   }
 
@@ -40,7 +55,6 @@ export class AppointmentController {
     return this.service.findByPatient(+patientId);
   }
 
-  // ✅ New: Get appointments by doctor ID
   @ApiOperation({ summary: 'Get appointments by doctor ID' })
   @Get('doctor/:doctorId')
   findByDoctor(@Param('doctorId') doctorId: string) {

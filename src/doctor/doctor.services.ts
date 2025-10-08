@@ -20,14 +20,14 @@ export class DoctorService {
 
   async findAll() {
     return this.prisma.doctor.findMany({
-      include: { user: true, department: true },
+      include: { user: true, department: true, schedule: true },
     });
   }
 
   async findOne(id: number) {
     const doctor = await this.prisma.doctor.findUnique({
       where: { id },
-      include: { user: true, department: true },
+      include: { user: true, department: true, schedule: true },
     });
     if (!doctor) throw new NotFoundException('Doctor not found');
     return doctor;
