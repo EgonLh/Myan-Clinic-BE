@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Post,
@@ -7,18 +8,21 @@ import {
   Patch,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CreateAppointmentDto } from './dtos/create.appointment.dto';
 import { UpdateAppointmentDto } from './dtos/update.appointment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @ApiTags('appointments')
 @ApiBearerAuth()
 @Controller('appointments')
 export class AppointmentController {
-  constructor(private service: AppointmentService) {}
+  constructor(private service: AppointmentService) { }
 
   @ApiOperation({ summary: 'Create an appointment' })
   @Post()
@@ -47,6 +51,34 @@ export class AppointmentController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateAppointmentDto) {
     return this.service.update(+id, dto);
+  }
+
+  @ApiOperation({ summary: 'Upload invoice for appointment' })
+  @Patch(':id/upload-invoice')
+  @UseInterceptors(FileInterceptor('invoice', {
+    storage: diskStorage({
+      destination: './uploads/invoices', // folder where files will be stored
+      filename: (req, file, callback) => {
+        // customize file name: e.g., appointment-1234.pdf
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        callback(null, `appointment-${uniqueSuffix}${ext}`);
+      },
+      }),
+  }))
+  uploadInvoice(
+    @Param('id') id: string,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Invoice file is required');
+    }
+
+    console.log('Stored file:', file); // contains path, filename, etc.
+
+    // Save the relative path in database
+    // const filePath = file.path; // e.g., uploads/invoices/appointment-123456.pdf
+    return this.service.uploadInvoice(+id, file);
   }
 
   @ApiOperation({ summary: 'Get appointments by patient ID' })
