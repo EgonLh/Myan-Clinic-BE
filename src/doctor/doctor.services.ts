@@ -13,6 +13,7 @@ export class DoctorService {
   constructor(private prisma: PrismaService) {}
 
   async create(uid: number, dto: CreateDoctorDto) {
+    console.log('The data:', uid);
     return this.prisma.doctor.create({
       data: { ...dto, uid },
     });

@@ -23,7 +23,8 @@ export class DoctorController {
 
   @Post()
   create(@CurrentUser() user, @Body() dto: CreateDoctorDto) {
-    return this.doctorService.create(user.userId, dto);
+    console.log('The data:', dto);
+    return this.doctorService.create(dto.uid, dto);
   }
 
   @Get()

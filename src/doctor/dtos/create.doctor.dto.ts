@@ -3,6 +3,10 @@
 import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateDoctorDto {
+
+  @IsNumber()
+  uid: number;
+
   @IsString()
   ph: string;
 

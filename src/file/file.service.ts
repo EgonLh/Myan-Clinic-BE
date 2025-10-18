@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,7 +11,7 @@ import * as path from 'path';
 
 @Injectable()
 export class FileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   /**
    * Create a new File record and save uploaded file
@@ -77,5 +78,60 @@ export class FileService {
       where: { storageId },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  /**
+   * Download a file by ID
+   */
+  async downloadFileById(id: number, res: any) {
+    // Find file record
+    const file = await this.prisma.file.findUnique({ where: { id } });
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    // Only allow PDF files
+    const ext = path.extname(file.filename).toLowerCase();
+    if (ext !== '.pdf') {
+      throw new Error('Only PDF files can be downloaded');
+    }
+
+    // Resolve the file path
+    const filePath = path.join(process.cwd(), 'uploads', file.filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      throw new Error('File not found on disk');
+    }
+    console.log("Name",file.filename);
+    // Set headers for download
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${file.filename}`,
+    );
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // Create a readable stream and pipe to response
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  }
+
+  async deleteFile(id: number) {
+    // Find the file record
+    const file = await this.prisma.file.findUnique({ where: { id } });
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    // Delete the physical file from uploads folder
+    const filePath = path.join(process.cwd(), 'uploads', file.filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    // Delete the record from database
+    await this.prisma.file.delete({ where: { id } });
+
+    return { success: true, id };
   }
 }

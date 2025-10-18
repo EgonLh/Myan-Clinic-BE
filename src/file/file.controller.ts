@@ -8,6 +8,8 @@ import {
   Param,
   UploadedFile,
   UseInterceptors,
+  Res,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
@@ -70,5 +72,16 @@ export class FileController {
   @Get('storage/:id/files')
   getFilesByStorage(@Param('id') id: string) {
     return this.service.getFilesByStorageId(Number(id));
+  }
+
+  @Get(':id/download')
+  async download(@Param('id') id: string, @Res() res: Response) {
+    return this.service.downloadFileById(Number(id), res);
+  }
+
+  @ApiOperation({ summary: 'Delete file by ID' })
+  @Delete(':id')
+  async deleteFile(@Param('id') id: string) {
+    return this.service.deleteFile(Number(id));
   }
 }
