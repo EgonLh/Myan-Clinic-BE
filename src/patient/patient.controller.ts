@@ -3,8 +3,6 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { PatientService } from './patient.service';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { CreatePatientDto } from './dtos/create.patient';
 import { UpdatePatientDto } from './dtos/update.patient';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -17,8 +15,8 @@ export class PatientController {
 
   @ApiOperation({ summary: 'Get a patient by ID' })
   @Post()
-  create(@CurrentUser() user, @Body() dto: CreatePatientDto) {
-    return this.patientService.create(user.userId, dto);
+  create( @Body() dto: CreatePatientDto) {
+    return this.patientService.create(dto.uid, dto);
   }
 
   @ApiOperation({ summary: 'Get a patient by ID' })
