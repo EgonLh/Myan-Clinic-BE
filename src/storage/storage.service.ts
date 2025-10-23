@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateStorageDto } from './dtos/create.storage.dto';
 import { UpdateStorageDto } from './dtos/update.storage.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Injectable()
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class StorageService {
   constructor(private prisma: PrismaService) {}
 

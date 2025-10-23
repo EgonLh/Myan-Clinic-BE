@@ -23,7 +23,7 @@ model User {
   email     String    @unique
   password  String
   role      String    // "Patient", "Doctor", "Root"
-  status       String        @default("inactive") // "active" | "inactive"
+  status    String        @default("inactive") // "active" | "inactive"
   rating    Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -62,6 +62,8 @@ model Root {
   id     Int    @id @default(autoincrement())
   uid    Int    @unique   // Reference to User.id
   user   User   @relation(fields: [uid], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Appointment {

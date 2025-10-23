@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -17,9 +18,11 @@ import { UpdateAppointmentDto } from './dtos/update.appointment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @ApiTags('appointments')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('appointments')
 export class AppointmentController {
   constructor(private service: AppointmentService) { }

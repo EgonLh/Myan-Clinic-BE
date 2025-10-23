@@ -18,8 +18,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('users')        // Groups routes under "users" in Swagger
-// @ApiBearerAuth()         // Adds JWT auth field in Swagger
-// @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()         // Adds JWT auth field in Swagger
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

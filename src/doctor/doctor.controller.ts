@@ -15,8 +15,10 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { DoctorService } from './doctor.services';
 import { CreateDoctorDto } from './dtos/create.doctor.dto';
 import { UpdateDoctorDto } from './dtos/update.doctor.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Controller('doctors')
 export class DoctorController {
   constructor(private doctorService: DoctorService) {}

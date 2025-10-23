@@ -5,9 +5,11 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@n
 import { PatientService } from './patient.service';
 import { CreatePatientDto } from './dtos/create.patient';
 import { UpdatePatientDto } from './dtos/update.patient';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()   
 @ApiTags('patients')
 @Controller('patients')
 export class PatientController {
