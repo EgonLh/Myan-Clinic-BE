@@ -22,7 +22,15 @@ export class FileService {
     }
 
     // Save the file to disk (uploads folder)
-    const uploadDir = path.join(process.cwd(), 'uploads');
+    const uploadDir = path.join(
+      process.cwd(),
+      'uploads',
+      String(dto.storageId),
+    );
+
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
     const uploadPath = path.join(uploadDir, file.originalname);
     fs.writeFileSync(uploadPath, file.buffer);
 
@@ -97,13 +105,18 @@ export class FileService {
     }
 
     // Resolve the file path
-    const filePath = path.join(process.cwd(), 'uploads', file.filename);
+    const filePath = path.join(
+      process.cwd(),
+      'uploads',
+      String(file.storageId),
+      file.filename,
+    );
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
       throw new Error('File not found on disk');
     }
-    console.log("Name",file.filename);
+    // console.log("Name",file.filename);
     // Set headers for download
     res.setHeader(
       'Content-Disposition',

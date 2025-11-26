@@ -81,7 +81,7 @@ export class AppointmentService {
 
   /** New method to upload invoice only */
   async uploadInvoice(id: number, file: Express.Multer.File) {
-    const uploadFolder = join(__dirname, '../../uploads/invoices');
+    const uploadFolder = join(__dirname, `../../uploads/invoices/${id}`);
     await fs.mkdir(uploadFolder, { recursive: true });
 
     // file.path exists when using diskStorage

@@ -60,14 +60,14 @@ export class AppointmentController {
   @Patch(':id/upload-invoice')
   @UseInterceptors(FileInterceptor('invoice', {
     storage: diskStorage({
-      destination: './uploads/invoices', // folder where files will be stored
+      destination: './uploads/invoices',
       filename: (req, file, callback) => {
-        // customize file name: e.g., appointment-1234.pdf
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const appointmentId = req.params.id;  // use the route parameter
+        const timestamp = Date.now();
         const ext = extname(file.originalname);
-        callback(null, `appointment-${uniqueSuffix}${ext}`);
+        callback(null, `appointment-${appointmentId}-${timestamp}${ext}`);
       },
-      }),
+    }),
   }))
   uploadInvoice(
     @Param('id') id: string,
